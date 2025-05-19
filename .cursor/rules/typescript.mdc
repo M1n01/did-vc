@@ -3,6 +3,7 @@ description: TypeScriptファイルを作成・編集する際のルール
 globs: 
 alwaysApply: false
 ---
+
 ## TypeScript
 
 TypeScriptでのコーディングにおける一般的なベストプラクティスをまとめます。

@@ -3,6 +3,7 @@ description:
 globs: 
 alwaysApply: false
 ---
+
 # テスト駆動開発 (TDD) の基本
 
 ## 基本概念
@@ -39,9 +40,6 @@ git commit -m "test: ユーザ操作テスト追加"
 
 ## 参考ドキュメント
 
-Node/TypeScript 環境における TDD の詳細手順やベストプラクティスは下記を参照してください。
-```
-.cursor/rules/roomodes/node-tdd.md
-```
+@roomodes/node-tdd.md
 
 このファイルにはテストファーストモードの詳細な手順、テストの命名規約、リファクタリングのベストプラクティスなどが含まれて
