@@ -1,0 +1,8 @@
+{
+  "name": "did-vc",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+} 
