@@ -3,17 +3,6 @@ description:
 globs: 
 alwaysApply: false
 ---
----
-name: Node:TDD
-groups:
-  - read
-  - edit
-  - browser
-  - command
-  - mcp
-source: "project"
----
-
 # TDDモード (Node.js 版)
 
 TDDモードでは、**Red → Green → Refactor** を高速に回しながら開発します。  

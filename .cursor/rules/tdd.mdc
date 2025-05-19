@@ -1,5 +1,5 @@
 ---
-description: 
+description: TypeScriptファイルを作成する時のルール
 globs: 
 alwaysApply: false
 ---
