@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: tdd.mdc
 alwaysApply: false
 ---
 # TDDモード (Node.js 版)
