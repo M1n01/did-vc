@@ -1,0 +1,47 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# テスト駆動開発 (TDD) の基本
+
+## 基本概念
+
+テスト駆動開発（TDD）は、次の 3 ステップを高速に繰り返す開発手法です。
+
+1. **Red** : まず失敗するテストを書く  
+2. **Green** : テストが通る最小限の実装を書く  
+3. **Refactor** : 重複を除去し、設計を洗練する
+
+## 重要な考え方
+
+- **テストは仕様そのもの**  
+  テストコード＝動く仕様書。ドキュメント代わりになる。  
+- **Assert → Act → Arrange の順番で思考**  
+  1. **Assert** : “どうなっていて欲しいか” を宣言  
+  2. **Act**  : テスト対象のロジックを呼び出す  
+  3. **Arrange** : 必要なセットアップを行う  
+- **テスト名は「状況→操作→結果」形式**  
+  例: **「有効なトークンの場合にユーザー情報を取得すると成功すること」**
+
+## リファクタリングフェーズの主要ツール
+
+| フェーズ | 推奨コマンド | 補足 |
+| --- | --- | --- |
+| **静的解析・型チェック** | `npx tsc --noEmit` <br>`npx biome check .` | `biome check` はフォーマッタ・リンタ・インポート整形を一括実行  [oai_citation:0‡Biome](mdc:https:/biomejs.dev/reference/cli/?utm_source=chatgpt.com) |
+| **デッドコード検出 (TSR)** | `npx tsr "src/**/*.ts"` | 使われていないコードを洗い出して削除 |
+| **コードカバレッジ** | **Jest**: `npm test -- --coverage` <br>**Vitest**: `npx vitest run --coverage` | テストランナーは好みで選択 |
+| **Git でスナップショット** | ```bash
+git status          # 変更確認
+git add <files>     # ステージ
+git commit -m "test: ユーザ操作テスト追加"
+``` | プレフィックス例: <br>`test:` テスト追加/修正 <br>`feat:` 機能実装 <br>`refactor:` 内部改善 |
+
+## 参考ドキュメント
+
+Node/TypeScript 環境における TDD の詳細手順やベストプラクティスは下記を参照してください。
+```
+.cursor/rules/roomodes/node-tdd.md
+```
+
+このファイルにはテストファーストモードの詳細な手順、テストの命名規約、リファクタリングのベストプラクティスなどが含まれて

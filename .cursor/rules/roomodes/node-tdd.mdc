@@ -1,0 +1,185 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+name: Node:TDD
+groups:
+  - read
+  - edit
+  - browser
+  - command
+  - mcp
+source: "project"
+---
+
+# TDDモード (Node.js 版)
+
+TDDモードでは、**Red → Green → Refactor** を高速に回しながら開発します。  
+ファイル冒頭に `@tdd` がある場合、テストファーストモードとして扱います。
+
+---
+
+## 考え方: テストは仕様である
+
+テストコード＝実装の仕様書。モジュールの **README.md** と **テスト一覧** から仕様を推論しましょう。
+
+```bash
+# 例: Vitest を使ってすべてのテストを実行
+npx vitest run
+```
+
+---
+
+## テスト実装の手順
+
+1. **期待する結果 (Assert) を最初に書く**  
+2. **アサーションの妥当性をユーザーに確認**  
+3. **操作 (Act) を書く**  
+4. **最後に準備 (Arrange) を書く**  
+
+実行順序 (Arrange → Act → Assert) とは逆に、**結果から実装** することで目的を明確化します。
+
+### 実装例
+
+```ts
+// @script @tdd
+import { ok, err, Result } from "neverthrow";
+import { describe, it, expect } from "vitest";
+
+// 型定義
+export interface User {
+  id: string;
+  name: string;
+}
+
+export type ApiError =
+  | { type: "unauthorized"; message: string }
+  | { type: "network"; message: string };
+
+// インターフェース定義
+declare function getUser(
+  token: string,
+  id: string,
+): Promise<Result<User, ApiError>>;
+
+describe("ユーザー取得", () => {
+  it("有効なトークンの場合にユーザー情報を取得すると成功すること", async () => {
+    // 1. 期待する結果
+    const expectedUser: User = { id: "1", name: "Test User" };
+
+    // 2. ユーザーに妥当性を確認 (省略)
+
+    // 3. 操作
+    const result = await getUser("valid-token", "1");
+
+    // 4. 準備 (この例では不要)
+
+    // アサーション
+    expect(result.isOk()).toBe(true);
+    result.map((user) => expect(user).toEqual(expectedUser));
+  });
+
+  it("無効なトークンの場合にユーザー情報を取得するとエラーになること", async () => {
+    const expectedError: ApiError = {
+      type: "unauthorized",
+      message: "Invalid token",
+    };
+
+    const result = await getUser("invalid-token", "1");
+
+    expect(result.isErr()).toBe(true);
+    result.mapErr((e) => expect(e).toEqual(expectedError));
+  });
+});
+```
+
+---
+
+## テスト & アサーション命名規約
+
+```
+「{状況}の場合に{操作}をすると{結果}になること」
+```
+
+例:
+
+- 「有効なトークンの場合にユーザー情報を取得すると成功すること」
+- 「無効なトークンの場合にユーザー情報を取得するとエラーになること」
+
+---
+
+## 開発ステップ詳細
+
+1. **型シグネチャ定義**
+
+   ```ts
+   export declare function getUser(
+     token: string,
+     id: string,
+   ): Promise<Result<User, ApiError>>;
+   ```
+
+2. **テストケースごとに**
+
+   a. 期待結果を定義  
+   b. ユーザーに結果を確認  
+   c. 操作コードを実装  
+   d. 必要なら準備コードを実装  
+
+---
+
+## Node.js 環境でのツールチェーン
+
+| フェーズ | 推奨コマンド | メモ |
+| --- | --- | --- |
+| **テスト実行** | `npx vitest run` | `--watch` でウォッチモード |
+| **カバレッジ** | `npx vitest run --coverage` | `coverage/` にレポート |
+| **静的解析** | `npx tsc --noEmit` | 型チェックのみ |
+| **Lint / Format** | `npx biome check .` <br>`npx biome format . --write` | Biome が eslint / prettier を置き換え |
+| **デッドコード検出** | `npx tsr "src/**/*.ts"` | 未使用エクスポートを検出 |
+| **Git スナップショット** | `git add` / `git commit -m "<prefix>: <msg>"` | `test:`, `feat:`, `refactor:` など |
+---
+
+## ディレクトリ構成例
+
+```
+tdd-example/
+  src/
+    lib.ts      - 実装
+  tests/
+    lib.test.ts - テスト
+  index.ts      - 公開 API
+  tsconfig.json
+```
+
+---
+
+## TDD サイクル実践例
+
+1. **落ちるテストを書く** → `npx vitest run` で失敗を確認  
+2. **最小実装** → テストが通ることを確認  
+3. **リファクタリング**  
+   - `npx biome check .`  
+   - `npx tsc --noEmit`  
+   - `npx tsr "src/**/*.ts"`（同意のうえで `--write`）  
+4. **Git コミット**  
+   - `test:` → テスト追加/修正  
+   - `feat:` → 機能実装  
+   - `refactor:` → 内部改善  
+
+---
+
+## TypeFirst モード
+
+- 先に **型シグネチャ** と **テスト** を書く  
+- `tsc --noEmit` が通ったらユーザーに提案  
+- 仕様を合意後に実装へ進む  
+
+---
+
+> **備考**  
+> - 本ドキュメントは Cursor IDE の **.mdc (Markdown + front-matter)** 形式で管理します。  
+> - `groups` フィールドで **read / edit / browser / command / mcp** モードに対応しています。  
+> - Node.js 実行環境は **ESM (type: "module")** を想定しています。
